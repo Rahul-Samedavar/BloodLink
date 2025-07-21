@@ -1,0 +1,166 @@
+<!-- selling-units.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selling Units Info</title>
+  <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+  <header id="headerForNav">
+    <nav class="nav">
+      <a class="nav-home" href="/"><img src="../static/logo.jpg" height="70"></a>
+      <div id="navLinks">
+        <button style="float: right;" onclick="location.href='/update'">#{user.name}</button>
+        <button style="float: right;" onclick="location.href='/signup'">Signup</button>
+        <button style="float: right;" onclick="location.href='/logout'">Log Out?</button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="card">
+  <div id="midSection">
+    <br></br>
+    <div class="container">
+      <h1 style="font-size: 50px">Dashboard</h1>
+      <form id="sellingUnitsForm">
+        <select id="bloodGroup" required>
+          <option value="" disabled selected>Select Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+        </select>
+        <input type="number" id="price" placeholder="Price in RS" required >
+        <button onclick="addMore()">ADD</button>
+      </form>
+    </div>
+    <div id="midSection">
+      <br></br>
+      <div class="container">
+        <h2>Selling Units List</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Blood Group</th>
+              <th>Price per Unit</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="table">
+          each price, blood in user.blood
+            <tr>
+              <th>#{blood}</th>
+              <th>#{price}</th>
+              <th><button onclick="deleteRow(this)">Remove</button></th>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          if user.issearchable
+            <input type="checkbox" id="giveNumber" name="giveNumber" value="1" checked onclick="shownum()"></label>
+            <label for="giveNumber" id="labelForgiveNumber">requesters can see your number</label><br>
+          else
+            <input type="checkbox" id="giveNumber" name =  "giveNumber" value="0" onclick="shownum()"></label>
+            <label for="giveNumber" id="labelForgiveNumber">requesters can't see your number</label><br>
+          </div>
+        <button onclick="save()">Save</button>
+      </div>
+    </div>
+  </div>
+    script.
+      function addMore() {
+        var table= document.getElementById("table");
+        var bloodGroup = document.getElementById("bloodGroup").value;
+        var price = document.getElementById("price").value;
+
+        if (bloodGroup == "" || price == "") {
+          alert("Please fill in all fields.");
+          return false;
+        } 
+        document.getElementById("bloodGroup").value = "";
+        document.getElementById("price").value = "";
+        table.innerHTML+=`
+          <tr>
+            <th>${bloodGroup}</th>
+            <th>${price}</th>
+            <th><button onclick="deleteRow(this)">Remove</button></th>
+          </tr>
+        `
+        return false
+      }
+      function deleteRow(btn){
+        const row = btn.closest('tr'); 
+        row.remove()
+      }
+
+      function save(){
+        const issearchable = document.getElementById("giveNumber").value
+        console.log(issearchable)
+        const obj = {};
+        const tableRows = document.querySelectorAll("#table tr");
+        tableRows.forEach(row => {
+          const cells = row.querySelectorAll("th");
+          const bloodGroup = cells[0].textContent.trim();
+          const price = parseInt(cells[1].textContent.trim());
+
+          obj[bloodGroup] = price;
+        });
+
+        update(obj, issearchable)
+      }
+
+
+      function shownum(){
+        var cb = document.getElementById("giveNumber")
+        var lb = document.getElementById('labelForgiveNumber')
+        if(cb.value == 0){
+          cb.value = 1
+          lb.innerHTML = "requesters can see your number"
+        }else{
+          cb.value = 0
+          lb.innerHTML = "requesters can't see your number"
+        }
+        cb.checked = (cb.value != 0)
+      }
+      var cb = document.getElementById("giveNumber")
+      cb.checked = cb.value != 0
+      
+      function update(bloodmap, issearchable) {
+        
+        fetch('/updateBlood', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            bloodmap,
+            issearchable: issearchable
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Update successful:');
+          window.location.href = '/update';
+        })
+        .catch(error => {
+          console.error('Error updating blood:', error);
+          // Handle error
+          // For example, you can display an error message to the user
+        });
+      }
+
+
+  </div>
+</body>
+</html>

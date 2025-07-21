@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Request</title>
+  <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+  <header id="headerForNav">
+    <nav class="nav">
+      <a class="nav-home" href="index.html"><img src="../static/logo.jpg" height="70"></a>
+      <div id="nav-link">
+        <button style="float: right;" onclick="location.href='/login'">login</button>
+        <button style="float: right;" onclick="location.href='/signup'">Seller/Donor Registration</button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="card">
+  <div id="midSection">
+    <br></br>
+    <br></br>
+    <div class="container">
+      <h2>Delete Request</h2>
+      <form id="sellerForm" onsubmit="return validateForm()">
+        <input type="tel" id="phone" placeholder="Phone No" required>
+        <br></br>
+        <input type="text" id="password" placeholder="Password" required>
+        <p id="er" style="margin:0">delete request?</p>
+        <button type="button" onclick="deleteRequest()" >Delete</button>
+      </form>
+    </div>
+  </div>
+  </div>
+    script.
+      var er = document.getElementById('er')
+      function verifyphone(){
+        const phone = document.getElementById("phone").value;
+        if(phone.length != 10){
+          er.innerHTML = "Invalid Number"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifypassword(){
+        const password = document.getElementById("password").value;
+        if(password === ""){
+          er.innerHTML = "enter password"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifyall(){
+        return verifyphone() && verifypassword()
+      }
+      
+      function deleteRequest() {
+        if (!verifyall()) return false;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+
+        fetch('/deleterequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phone, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.msg === 0) {
+                er.innerHTML = "Request not found";
+            } else if (data.msg === 1) {
+                er.innerHTML = 'Request deleted successfully';
+            } else if (data.msg === -1) {
+                er.innerHTML = 'Incorrect password';
+            } else {
+                er.innerHTML = 'An error occurred';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      }
+
+      
+  </div>
+</body>
+</html>
