@@ -18,7 +18,7 @@
 ## Tech Stack  
 - **Backend:** Node.js, Express, MySQL  
 - **Frontend:** HTML, CSS, JavaScript  
-- **Notifications:** Firebase Cloud Messaging (FCM) / WebSockets  
+- **Notifications:** Firebase Cloud Messaging (FCM)
 
 <img src="Images/I6.jpeg" />
 <img src="Images/I4.jpeg" />
