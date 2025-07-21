@@ -1,0 +1,209 @@
+@import url(https://fonts.googleapis.com/css?family=Lemon);
+
+*{
+  font-family: 'Lemon';
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+#sellerForm, #searchForm{
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  text-align: center;
+}
+
+body{
+  background-color: red;
+}
+
+h2{
+  color: rgb(51, 19, 19);
+  height: 25px;
+  font-size: 30px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border-radius: 10px;
+}
+
+button:hover {
+  background-color: black;
+  transition: 0.5s;
+}
+
+input, select {
+  margin: 5px;
+  padding: 8px;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #631515;
+}
+
+#message, #goAheadBtn, #sellerTable, #notifyBtn, #notifyMsg {
+  margin-top: 20px;
+}
+header {
+  background-color: #f8fbfc;
+  width: 97.5%;
+  padding: 10px;
+  margin-left: -10px;
+  margin-right: -100px;
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  border: 10px red solid;
+  border-radius: 20px;
+}a
+
+
+nav {
+  display: flex;
+  justify-content: space-around;  
+  align-items: center;
+  background-color: #dfa5ea;
+  border-radius: 10px;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  padding: 10px;
+  transition: background .2s ease;
+}
+
+
+
+
+.card {
+  margin: 0 auto; 
+  margin-top: 150px;
+  width: 80%; 
+  padding: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+  border-radius: 10px;
+  background-color: white;
+  
+  background-image: url("../static/bd1.png") ;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-size: auto 80%;
+}
+
+
+select, input, button {
+  margin-bottom: 10px;
+}
+
+
+table {
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 20px; 
+}
+
+th, td {
+  border: 1px solid #0e0707; /* Add border to table cells */
+  padding: 8px; /* Add padding inside table cells */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color:#FFC0C0; /* Background color for table header */
+}
+
+thead tr th{
+  background-color: #FF8080;
+}
+/* changes start */
+.hamburger {
+  display: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px;
+  background-color: black;
+}
+
+@media only screen and (max-width: 768px) {
+  .nav {
+    flex-direction: row;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  #navLinks {
+    display: none;
+    width: fit-content;
+  }
+
+  #navLinks.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #a5eaea;
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    top: 50px; /* Adjust according to your header height */
+    right: 0;
+  }
+
+  #navLinks button {
+    margin: 5px;
+
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: space-between; /* Distribute items evenly */
+}
+
+.logo-and-buttons {
+  display: flex; /* Use flexbox for logo and buttons */
+  align-items: center; /* Align items vertically */
+}
+
+
+#hamburger:hover{
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+#hamburger{
+  transition: 0.2s;
+}

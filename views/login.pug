@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+  <header id="headerForNav">
+    <nav class="nav">
+      <a class="nav-home" href="/"><img src="../static/logo.jpg" height="70"></a>
+      <button style="float: right;" onclick="location.href='/signup'">New Donor?</button>
+    </nav>
+  </header>
+
+  <div class="card">
+    <div id="midSection">
+      <br></br>
+      <br></br>
+      <div class="container">
+        <h2>Login</h2>
+        <form id="sellerForm" >
+          <input type="tel" id="phone" name="phone" placeholder="Phone No" required>
+          <br></br>
+          <input type="text" id="password" name="password" placeholder="Password" required>
+          <label>allow notifications to receive requests</label>
+          <br></br>
+          <h5 id="msg" style="margin: 0"></h5>
+        </form>
+          <button onclick="validateForm()">Login</button>
+      </div>
+    </div>
+  </div>    
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.0.0/firebase-app-compat.min.js" integrity="sha512-QxCI6n9lTLJpOHQcpZV2klXd5DhqSrGGe1rU2Cbr9+uCTNozkfbs/w5LVrk/pIgJwd1sFaKtvWGqw3EBtguHcA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.0.0/firebase-messaging-compat.min.js" integrity="sha512-S1ikyG/9rWv+KJjbwHJGTKeYYnmVJxcvgQOBztLUPsRY4ZoSmPK+b8jTiDrt4lSP5SlpkpEQCbhwWQJK+kx7jQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  script. 
+        var nToken = "";
+        const app_key = "***********************************";
+        const firebaseConfig = {
+          apiKey: "*****************************",
+          authDomain: "**********************************",
+          projectId: "**************************",
+          storageBucket: "************************",
+          messagingSenderId: "*************",
+          appId: "*************************************",
+          measurementId: "*****************"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const m = firebase.messaging();
+        var msg = document.getElementById("msg");
+
+        function validateForm() {
+          var password = document.getElementById("password").value;
+          var phone = document.getElementById("phone").value;
+
+          if (phone == "" || password == "") {
+            alert("Please fill in all fields.");
+            return false;
+          }
+          
+         registerUserFCM()
+        }
+
+        function loginUser(nToken) {
+          try {
+            //- console.log("nT",nToken)
+            phone = document.getElementById("phone").value
+            password = document.getElementById("password").value
+                    
+            fetch('/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({phone, password, nToken})
+            })
+            .then(response => {
+              if (!response.ok) {
+              }
+              return response.json();
+            })
+            .then(result => {
+              if (result.error) {
+              msg.innerHTML = result.error;
+              return;
+              }console.log(result)
+              const token = result.token;
+              document.cookie = `access_token=${token}; path=/;SameSite=None; Secure`;
+              console.log('Login successful');
+              window.location.href = "/update";
+            
+            })
+            .catch(error => {
+              console.error('There was a problem with the login request:', error);
+            });
+          } 
+          catch (error){
+            console.error('There was a problem with the login request:', error);
+          }
+        }
+        function sendTokenToDB(done) {
+          m.getToken({
+            vapidKey: app_key
+          }).then((currentToken) => {
+            if (currentToken) {
+              console.log('current token for client: ', currentToken);
+              loginUser(currentToken)
+            }
+          }).catch((err) => {
+            console.log('An error occurred while retrieving token. ', err);
+            loginUser(undefined)
+          });
+        }
+
+        function registerUserFCM() {
+          if (!("Notification" in window)) {
+            return false
+          } else if (Notification.permission === "granted") {
+            return sendTokenToDB()
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                return sendTokenToDB()
+              } else {
+                alert("You won't be able to receive blood request notifications!")
+              }
+            });
+          }
+        }
+  
+</body>
+</html>

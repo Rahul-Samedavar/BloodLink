@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request</title>
+  <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+  <header id="headerForNav">
+    <nav class="nav">
+      <a class="nav-home" href="/"><img src="../static/logo.jpg" height="70"></a>
+      <div id="navLinks">
+        <button style="float: right;" onclick="location.href='/signup'">Seller/Donor Registration</button>
+        <button style="float: right;" onclick="location.href='/deleterequest'">Delete Request</button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="card">
+  <div id="midSection">
+    <br></br>
+    <br></br>
+    <div class="container">
+      <h1>Request Donors</h1>
+      <form id="sellerForm" onsubmit="return validateForm()">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="tel" id="phone" placeholder="Phone No" required>
+        <input type="text" id="password" placeholder="Create A Password" required>
+        <br></br>
+
+        <select id="bloodGroup" required>
+          <option value="" disabled selected>Select Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+        </select>
+        
+        <select id="bloodType" required>
+          <option value="Compatible" selected>Compatible</option>
+          <option value="Exact">Exact</option>
+        </select>
+
+        <select id="priceRange" required>
+          <option value="" disabled selected>Price Range</option>
+          <option value="0">Free Blood Donation</option>
+          <option value="500 ">upto 500₹ per unit</option>
+          <option value="1000 ">upto 1000₹ per unit</option>
+          <option value="10000 ">Any rate</option>
+        </select>
+        <br></br>
+          <div id="locationSection" style="display: flex; justify-content: space-between;">
+            <button type="button" >Get Location</button>
+          <h3>or</h3>
+          </div>
+        <select id="state"  onchange="populateDistricts()">
+          <option value="" disabled selected>Select State</option>
+          <!-- Options for states will be populated dynamically using JavaScript -->
+        </select>
+        <select id="district">
+          <option value="" disabled selected>Select District</option>
+          <!-- Options for districts will be populated dynamically using JavaScript -->
+        </select>
+        <br></br>
+        <button type="button" onclick="sendRequest()">Submit</button>
+      </form>
+        <p id="er"></p>
+      <h5>A message will be sent  to the Individual donors</h5>
+    </div>
+    </div>
+    script.
+      var er = document.getElementById('er')
+      function validateForm() {
+        var name = document.getElementById("name").value;
+        var phone = document.getElementById("phone").value;
+        var password = document.getElementById("password").value;
+        var bloodType = document.getElementById("bloodType").value;
+        var bloodGroup = document.getElementById("bloodGroup").value;
+        var priceRange = document.getElementById("priceRange").value;
+        var state = document.getElementById("state").value;
+        var district = document.getElementById("district").value;
+
+        if (district !== "" || location!== ""){
+            alert("Request Submitted")
+            return true; // Prevent default form submission
+        }
+        else {
+          alert("Please fill in all fields.");
+          return false; // Prevent form submission
+        }
+
+      }
+      const stateDistricts = {
+        "Andhra Pradesh": ["Alluri Sitharama Raju", "Anakapalli", "Ananthapuramu", "Annamayya", "Bapatla", "Chittoor", "Dr. B.R. Ambedkar Konaseema", "East Godavari", "Eluru", "Guntur", "Kakinada", "Krishna", "Kurnool", "Nandyal", "NTR", "Palnadu", "Parvathipuram Manyam", "Prakasam", "Srikakulam", "Sri Potti Sriramulu Nellore", "Sri Sathya Sai", "Tirupati", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR"],
+        "Arunachal Pradesh": ["Anjaw", "Changlang", "East Kameng", "East Siang", "Itanagar capital complex", "Kamle", "Kra Daadi", "Kurung Kumey", "Lepa Rada", "Lohit", "Longding", "Lower Dibang Valley", "Lower Siang", "Lower Subansiri", "Namsai", "Pakke-Kessang", "Papum Pare", "Shi Yomi", "Siang", "Tawang", "Tirap", "Upper Dibang Valley", "Upper Siang", "Upper Subansiri", "West Kameng", "West Siang"],
+        "Assam": ["Bajali", "Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dhubri", "Dibrugarh", "Dima Hasao", "Goalpara", "Golaghat", "Hailakandi", "Hojai", "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur", "Majuli", "Morigaon", "Nagaon", "Nalbari", "Sivasagar", "South Salmara Mankachar", "Sonitpur", "Tamulpur", "Tinsukia", "Udalguri", "West Karbi Anglong"],
+        "Bihar": ["Araria", "Arwal", "Aurangabad", "Banka", "Begusarai", "Bhagalpur", "Bhojpur", "Buxar", "Darbhanga", "East Champaran", "Gaya", "Gopalganj", "Jamui", "Jehanabad", "Kaimur", "Katihar", "Khagaria", "Kishanganj", "Lakhisarai", "Madhepura", "Madhubani", "Munger", "Muzaffarpur", "Nalanda", "Nawada", "Patna", "Purnia", "Rohtas", "Saharsa", "Samastipur", "Saran", "Sheikhpura", "Sheohar", "Sitamarhi", "Siwan", "Supaul", "Vaishali", "West Champaran"],
+        "Chhattisgarh": ["Balod", "Baloda Bazar", "Balrampur-Ramanujganj", "Bastar", "Bemetara", "Bijapur", "Bilaspur", "Dantewada", "Dhamtari", "Durg", "Gariaband", "Gaurela-Pendra-Marwahi", "Janjgir-Champa", "Jashpur", "Kabirdham", "Kanker", "Khairagarh-Chhuikhadan-Gandai", "Kondagaon", "Korba", "Korea", "Mahasamund", "Manendragarh-Chirmiri-Bharatpur", "Mohla-Manpur-Ambagarh Chowki", "Mungeli", "Narayanpur", "Raigarh", "Raipur", "Rajnandgaon", "Sarangarh-Bilaigarh", "Shakti", "Sukma", "Surajpur", "Surguja"],
+        "Goa": ["North Goa", "South Goa"],
+        "Gujarat": ["Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhumi Dwarka", "Gandhinagar", "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"],
+        "Haryana": ["Ambala", "Bhiwani", "Charkhi Dadri", "Faridabad", "Fatehabad", "Gurugram", "Hisar", "Jhajjar", "Jind", "Kaithal", "Karnal", "Kurukshetra", "Mahendragarh", "Nuh", "Palwal", "Panchkula", "Panipat", "Rewari", "Rohtak", "Sirsa", "Sonipat", "Yamunanagar"],
+        "Jharkhand":[	"Bokaro", "Chatra", "Deoghar", "Dhanbad", "Dumka", "East Singhbhum", "Garhwa", "Giridih", "Godda", "Gumla", "Hazaribag", "Jamtara", "Khunti", "Koderma", "Latehar", "Lohardaga", "Pakur", "Palamu", "Ramgarh", "Ranchi", "Sahibganj", "Seraikela-Kharsawan", "Simdega", "West Singhbhum" ],
+        "Karnataka": ["Bagalakote", "Ballari", "Belagavi", "Bengaluru Rural", "Bengaluru Urban", "Bidar", "Chamarajanagara", "Chikkaballapura", "Chikkamagaluru", "Chitradurga", "Dakshina Kannada", "Davanagere", "Dharwada", "Gadaga", "Kalaburagi", "Hassan", "Haveri", "Kodagu", "Kolar", "Koppala", "Mandya", "Mysuru", "Raichuru", "Ramanagara", "Shivamogga", "Tumakuru", "Udupi", "Uttara Kannada", "Vijayanagara", "Vijayapura", "Yadgiri" ],
+        "Kerela": ["Alappuzha", "Ernakulam", "Idukki", "Kannur", "Kasaragod", "Kollam", "Kottayam", "Kozhikode", "Malappuram", "Palakkad", "Pathanamthitta", "Thiruvananthapuram", "Thrissur", "Wayanad" ],
+        "Madhya Pradesh" :[ "Agar Malwa", "Alirajpu", "Anuppur", "Ashoknagar", "Balaghat", "Barwani", "Betul", "Bhind", "Bhopal", "Burhanpur", "Chhatarpur", "Chhindwara", "Damoh", "Datia", "Dewas", "Dhar", "Dindori", "Guna", "Gwalior", "Harda", "Narmadapuram", "Indore", "Jabalpur", "Jhabua", "Katni", "Khandwa (East Nimar)", "Khargone (West Nimar)", "Mandla", "Mandsaur", "Morena", "Narsinghpur", "Neemuch", "Niwari", "Panna", "Raisen", "Rajgarh", "Ratlam", "Rewa", "Sagar", "Satna", "Sehore", "Seoni", "Shahdol", "Shajapur", "Sheopur", "Shivpuri", "Sidhi Sidhi", "Singrauli", "Tikamgarh", "Ujjain", "Umaria", "Vidisha" ],
+        "Maharashtra": [ 	"Ahmednagar", "Akola", "Amravati", "Aurangabad", "Beed", "Bhandara", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Mumbai City", "Mumbai Suburban", "Nagpur", "Nanded", "Nandurbar", "Nashik", "Osmanabad", "Palghar", "Parbhani", "Pune", "Raigad", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal" ],
+        "Manipur":[ "Bishnupur", "Chandel", "Churachandpur", "Imphal East", "Imphal West", "Jiribam", "Kakching", "Kamjong", "Kangpokpi", "Noney", "Pherzawl", "Senapati", "Tamenglong", "Tengnoupal", "Thoubal", "Ukhrul"],
+        "Meghalaya":[ "East Garo Hills", "East Jaintia Hills", "East Khasi Hills", "North Garo Hills", "Ribhoi", "South Garo Hills", "South West Garo Hills", "South West Khasi Hills", "West Garo Hills", "West Jaintia Hills", "West Khasi Hills "],
+        "Mizoram":[ "Aizawl East", "Aizawl West", "Champhai", "Mamit", "Kolasib", "Lawngtlai", "Lunglei", "Saiha", "Serchhip"],
+        "Nagaland":[" Dimapur", "Kiphire", "Kohima", "Longleng", "Mokokchung", "Mon", "Peren", "Phek", "Tuensang", "Wokha", "Zunheboto" ],
+        "Odisha":[ "Angul", "Balangir", "Balasore", "Bargarh", "Bhadrak", "Boudh", "Cuttack", "Deogarh", "Dhenkanal", "Gajapati", "Ganjam", "Jagatsinghapur", "Jajpur", "Jharsuguda", "Kalahandi", "Kandhamal", "Kendrapara", "Kendujhar", "Khordha", "Koraput", "Malkangiri", "Mayurbhanj", "Nabarangpur", "Nayagarh", "Nuapada", "Puri", "Rayagada", "Sambalpur", "Subarnapur", "Sundargarh "],
+        "Punjab":[" Amritsar", "Barnala", "Bathinda", "Faridkot", "Fatehgarh Sahib", "Fazilka", "Firozpur", "Gurdaspur", "Hoshiarpur", "Jalandhar", "Kapurthala", "Ludhiana", "Mansa", "Moga", "Muktsar", "Pathankot", "Patiala", "Rupnagar", "Sahibzada Ajit Singh Nagar", "Sangrur", "Shahid Bhagat Singh Nagar", "Sri Muktsar Sahib", "Tarn Taran "],
+        "Rajasthan":[ "Ajmer", "Alwar", "Banswara", "Baran", "Barmer", "Bharatpur", "Bhilwara", "Bikaner", "Bundi", "Chittorgarh", "Churu", "Dausa", "Dholpur", "Dungarpur", "Hanumangarh", "Jaipur", "Jaisalmer", "Jalore", "Jhalawar", "Jhunjhunu", "Jodhpur", "Karauli", "Kota", "Nagaur", "Pali", "Pratapgarh", "Rajsamand", "Sawai Madhopur", "Sikar", "Sirohi", "Sri Ganganagar", "Tonk", "Udaipur "],
+        "Sikkim"	:[ "East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim "],
+        "Tamil Nadu":[  "Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Cuddalore", "Dharmapuri", "Dindigul", "Erode", "Kallakurichi", "Kanchipuram", "Kanniyakumari", "Karur", "Krishnagiri", "Madurai", "Nagapattinam", "Namakkal", "Nilgiris", "Perambalur", "Pudukkottai", "Ramanathapuram", "Ranipet", "Salem", "Sivaganga", "Tenkasi", "Thanjavur", "Theni", "Thoothukudi", "Tiruchirappalli", "Tirunelveli", "Tirupathur", "Tiruppur", "Tiruvallur", "Tiruvannamalai", "Tiruvarur", "Vellore", "Viluppuram", "Virudhunagar "],
+        "Telangana"	: [" Adilabad", "Bhadradri Kothagudem", "Hyderabad", "Jagtial", "Jangaon", "Jayashankar Bhupalapally", "Jogulamba Gadwal", "Kamareddy", "Karimnagar", "Khammam", "Kumuram Bheem Asifabad", "Mahabubabad", "Mahabubnagar", "Mancherial", "Medak", "Medchal-Malkajgiri", "Mulugu", "Nagarkurnool", "Nalgonda", "Narayanpet", "Nirmal", "Nizamabad", "Peddapalli", "Rajanna Sircilla", "Rangareddy", "Sangareddy", "Siddipet", "Suryapet", "Vikarabad", "Wanaparthy", "Warangal Rural", "Warangal Urban", "Yadadri Bhuvanagiri"],
+        "Tripura": [ "Dhalai", "Gomati", "Khowai", "North Tripura", "Sepahijala", "South Tripura", "Unakoti", "West Tripura"],
+        "Uttar Pradesh":[" Agra", "Aligarh", "Ambedkar Nagar", "Amethi", "Amroha", "Auraiya", "Ayodhya", "Azamgarh", "Baghpat", "Bahraich", "Ballia", "Balrampur", "Banda", "Barabanki", "Bareilly", "Basti", "Bhadohi", "Bijnor", "Budaun", "Bulandshahr", "Chandauli", "Chitrakoot", "Deoria", "Etah", "Etawah", "Farrukhabad", "Fatehpur", "Firozabad", "Gautam Buddh Nagar", "Ghaziabad", "Ghazipur", "Gonda", "Gorakhpur", "Hamirpur", "Hapur", "Hardoi", "Hathras", "Jalaun", "Jaunpur", "Jhansi", "Kannauj", "Kanpur Dehat", "Kanpur Nagar", "Kasganj", "Kaushambi", "Kushinagar", "Lakhimpur Kheri", "Lalitpur", "Lucknow", "Maharajganj", "Mahoba", "Mainpuri", "Mathura", "Mau", "Meerut", "Mirzapur", "Moradabad", "Muzaffarnagar", "Pilibhit", "Pratapgarh", "Prayagraj", "Raebareli", "Rampur", "Saharanpur", "Sambhal", "Sant Kabir Nagar", "Shahjahanpur", "Shamli", "Shravasti", "Siddharthnagar", "Sitapur", "Sonbhadra", "Sultanpur", "Unnao", "Varanasi"],
+        "Uttarakhand"	: [ "Almora", "Bageshwar", "Chamoli", "Champawat", "Dehradun", "Haridwar", "Nainital", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi"],
+        "West Bengal"	: [ "Alipurduar", "Bankura", "Birbhum", "Cooch Behar", "Dakshin Dinajpur", "Darjeeling", "Hooghly", "Howrah", "Jalpaiguri", "Jhargram", "Kalimpong", "Kolkata", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "Paschim Bardhaman", "Paschim Medinipur", "Purba Bardhaman", "Purba Medinipur", "Purulia", "South 24 Parganas", "Uttar Dinajpur", "West Bardhaman"]
+      };
+
+      function populateStates() {
+        const stateDropdown = document.getElementById("state");
+        for (const state in stateDistricts) {
+          const option = document.createElement("option");
+          option.value = state;
+          option.textContent = state;
+          stateDropdown.appendChild(option);
+        }
+      }
+
+      function populateDistricts() {
+        const state = document.getElementById("state").value;
+        const districtDropdown = document.getElementById("district");
+        districtDropdown.innerHTML = "<option value='' disabled selected>Select District</option>";
+        const districts = stateDistricts[state];
+        for (const district of districts) {
+          const option = document.createElement("option");
+          option.value = district;
+          option.textContent = district;
+          districtDropdown.appendChild(option);
+        }
+      }
+
+      populateStates();
+    
+      const compatibilityMap = {
+          'A+': ['A+', 'O+'],
+          'A-': ['A+', 'A-', 'O+', 'O-'],
+          'B+': ['B+', 'O+'],
+          'B-': ['B+', 'B-', 'O+', 'O-'],
+          'AB+': ['A+', 'B+', 'AB+', 'O+'],
+          'AB-': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+          'O+': ['O+'],
+          'O-': ['O+', 'O-']
+      };
+
+      
+      function verifyname(){
+        const name = document.getElementById("name").value;
+        if(! /^[a-zA-Z\s]+$/.test(name)){
+          er.innerHTML = "Invalid Name"
+          return false
+        }
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifyphone(){
+        const phone = document.getElementById("phone").value;
+        if(phone.length != 10){
+          er.innerHTML = "Invalid Number"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifypassword(){
+        const password = document.getElementById("password").value;
+        const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if(! strongPasswordRegex.test(password)){
+          er.innerHTML = "Weak Password: include a mix of uppercase letters,lowercase letters, numbers, and special characters"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifyblood(){
+        const state = document.getElementById("bloodGroup").value;
+        if(state === ""){
+          er.innerHTML = "Select State"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+      
+      function verifyprice(){
+        const state = document.getElementById("priceRange").value;
+        if(state === ""){
+          er.innerHTML = "Select State"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+      function verifystate(){
+        const state = document.getElementById("state").value;
+        if(state === ""){
+          er.innerHTML = "Select State"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+
+      function verifydistrict(){
+        const district = document.getElementById("district").value;
+        if(district === ""){
+          er.innerHTML = "Select State"
+          return false
+        } 
+        er.innerHTML = "" 
+        return true
+      }
+      function verifyall(){
+        return (verifyname() && verifypassword() && verifyphone() && verifystate() && verifydistrict() && verifyblood() && verifyprice())
+      }
+
+
+      function sendRequest() {
+        if(!verifyall()) return false
+        const name = document.getElementById('name').value
+        const phone = document.getElementById('phone').value
+        const password = document.getElementById('password').value
+        const blood = document.getElementById('bloodGroup').value
+        const needExact = document.getElementById('bloodType').value === "Exact" ? 1 : 0
+        const price = document.getElementById('priceRange').value
+        const state = document.getElementById('state').value
+        const district = document.getElementById('district').value
+
+        fetch('/request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, phone, password, blood, needExact, price, state, district })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to send request');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if(!data.r) alert("Internal Server Error Occured. Sorry for Incovenience:(")
+          else if(data.r > 0) alert("request sent. kindly delete request once you get blood")
+          else alert("Internal Server Error Occured. Sorry for Incovenience:(")
+        })
+        .catch(error => {
+          er.innerHTML = 'error'
+        });
+      }
+
+
+
+  </div>
+</body>
+</html>
